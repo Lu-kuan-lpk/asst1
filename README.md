@@ -272,6 +272,7 @@ the foreach loop to yield a more straightforward implementation.
   on a single core. This parallelization scheme differs from that of
   Program 1, where speedup was achieved by running threads on multiple
   cores.
+  > it is expected to achieve the  8* performance but not because of the inbalance of the workload, as for the black and white color, the quantity of computing is not equal, so the view2 with more change between the black and white has the lower performance
 
 If you look into detailed technical material about the CPUs in the myth machines, you will find there are a complicated set of rules about how many scalar and vector instructions can be run per clock.  For the purposes of this assignment, you can assume that there are about as many 8-wide vector execution units as there are scalar execution units for floating point math.   
 
@@ -303,6 +304,7 @@ different CPU cores).
   performance that exceeds the sequential version of the code by over 32 times!
   How did you determine how many tasks to create? Why does the
   number you chose work best?
+  > 16 because my virtual machine has 8 core with 2 thread for each core
 3.  _Extra Credit: (2 points)_ What are differences between the thread
   abstraction (used in Program 1) and the ISPC task abstraction? There
   are some obvious differences in semantics between the (create/join
@@ -311,6 +313,7 @@ different CPU cores).
   happens when you launch 10,000 ISPC tasks? What happens when you launch
   10,000 threads? (For this thought experiment, please discuss in the general case
   - i.e. don't tie your discussion to this given mandelbrot program.)
+  > For thread, each thread has its own context for reg, stack, pc..., and will run by the schedule of OS, however, the tasks of ISPC will be managed by the program whether it should be split or combine to the same hardware thread, which means the 1000 tasks would be realistically be executing by 10 threads. [ similar to the routine of go, a user mode thread, which could do some logic for convinience ]
 
 _The smart-thinking student's question_: Hey wait! Why are there two different
 mechanisms (`foreach` and `launch`) for expressing independent, parallelizable
