@@ -249,6 +249,58 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
   // Your solution should work for any value of
   // N and VECTOR_WIDTH, not just when VECTOR_WIDTH divides N
   //
+
+  __cs149_vec_float curfloat;
+  __cs149_vec_float result, onef = _cs149_vset_float(1), upper = _cs149_vset_float(9.999999f);
+  __cs149_vec_int curexp, zero = _cs149_vset_int(0), one = _cs149_vset_int(1), count;
+  __cs149_mask maskAll, maskEqZero, maskNeqZero, needMul;
+
+  for(int i=0;i<N;i+=VECTOR_WIDTH){
+    int width = min(VECTOR_WIDTH,N-i);
+    
+    maskAll = _cs149_init_ones(width);
+
+    maskEqZero = _cs149_init_ones(0);
+
+    _cs149_vload_int(curexp,exponents+i,maskAll);
+
+    _cs149_vload_float(curfloat,values+i,maskAll);
+
+    _cs149_vload_float(result,values+i,maskAll);
+
+    _cs149_veq_int(maskEqZero, zero, curexp, maskAll);
+
+    maskNeqZero = _cs149_mask_not(maskEqZero);
+
+    needMul = maskNeqZero;
+
+    // if exp ==0 then set to 1
+    _cs149_vset_float(result,1,maskEqZero); 
+
+    // do the else branch
+    _cs149_vsub_int(count, curexp, one, needMul);
+
+    _cs149_vgt_int(needMul, count, zero, needMul);
+
+    while(_cs149_cntbits(needMul)){
+
+      _cs149_vmult_float(result, result, curfloat, needMul);
+
+      _cs149_vsub_int(count, count, one, needMul);
+
+      _cs149_vgt_int(needMul, count, zero, needMul);      
+    }
+    
+    __cs149_mask overflow = _cs149_init_ones(0);
+
+    _cs149_vgt_float(overflow, result, upper, maskNeqZero);
+
+    _cs149_vset_float(result, 9.999999f, overflow);
+
+    _cs149_vstore_float(output + i, result, maskAll);
+  }
+
+
   
 }
 
