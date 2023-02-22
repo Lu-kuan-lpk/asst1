@@ -352,7 +352,7 @@ Note: This problem is a review to double-check your understanding, as it covers 
   > set each value equal, in this way we could fix the inbalance between the 8-wide avx instruction
 3.  Construct a specific input for `sqrt` that __minimizes speedup for ISPC (without-tasks) over the sequential version of the code__. Describe this input, describe why you chose it, and report the resulting relative performance of the ISPC implementations. What is the reason for the loss in efficiency? 
     __(keep in mind we are using the `--target=avx2` option for ISPC, which generates 8-wide SIMD instructions)__. 
-  > set idx % 8 ==0 to 2.999 while other is 1, then the one is slowing all the instruction executing [短板效应]
+  > set idx % 8 ==0 to 2.999 while other is 1, then the one is slowing all the instruction executing [短板效应] [could not set %64 because the task is not the thread!!]
 4.  _Extra Credit: (up to 2 points)_ Write your own version of the `sqrt` 
  function manually using AVX2 intrinsics. To get credit your 
     implementation should be nearly as fast (or faster) than the binary 
@@ -374,7 +374,9 @@ elements used. `saxpy` is a *trivially parallelizable computation* and features 
   ISPC (without tasks) and ISPC (with tasks) implementations of saxpy. What 
   speedup from using ISPC with tasks do you observe? Explain the performance of this program.
   Do you think it can be substantially improved? (For example, could you rewrite the code to achieve near linear speedup? Yes or No? Please justify your answer.)
+  > yes as the expansion of the foreach would interleave between the program, then make the 短板效应, so we should compute the similar number in one program
 2. __Extra Credit:__ (1 point) Note that the total memory bandwidth consumed computation in `main.cpp` is `TOTAL_BYTES = 4 * N * sizeof(float);`.  Even though `saxpy` loads one element from X, one element from Y, and writes one element to `result` the multiplier by 4 is correct.  Why is this the case? (Hint, think about how CPU caches work.)
+  > result should be fetch then write back
 3. __Extra Credit:__ (points handled on a case-by-case basis) Improve the performance of `saxpy`.
   We're looking for a significant speedup here, not just a few percentage 
   points. If successful, describe how you did it and what a best-possible implementation on these systems might achieve. Also, if successful, come tell the staff, we'll be interested. ;-)

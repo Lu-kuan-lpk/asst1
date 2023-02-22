@@ -5,7 +5,12 @@ export void saxpy_ispc(uniform int N,
                             uniform float Y[],
                             uniform float result[])
 {
-    foreach (i = 0 ... N) {           
+    //foreach (i = 0 ... N) {           
+    //    result[i] = scale * X[i] + Y[i];
+    //}
+    int start = programIndex * (N/programCount);
+    int end = min(N, (programIndex +1) * (N/programCount));
+    for(int i = start; i<end;i++){
         result[i] = scale * X[i] + Y[i];
     }
 }
