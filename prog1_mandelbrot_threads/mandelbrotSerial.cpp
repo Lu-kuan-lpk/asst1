@@ -38,6 +38,7 @@
 */
 
 
+#include <cstdio>
 static inline int mandel(float c_re, float c_im, int count)
 {
     float z_re = c_re, z_im = c_im;
@@ -88,5 +89,28 @@ void mandelbrotSerial(
             output[index] = mandel(x, y, maxIterations);
         }
     }
+    // printf("[%d]\n", endRow*width-1);
 }
 
+
+
+void mandelbrotSerial1(
+    float x0, float y0, float x1, float y1,
+    int width, int height, int step,
+    int maxIterations,
+    int output[])
+{
+    float dx = (x1 - x0) / width;
+    float dy = (y1 - y0) / height;
+
+    for (int j = 0; j < height; j+=step) {
+        for (int i = 0; i < width; ++i) {
+            float x = x0 + i * dx;
+            float y = y0 + j * dy;
+
+            int index = (j * width + i);
+            output[index] = mandel(x, y, maxIterations);
+        }
+    }
+    // printf("[%d]\n", endRow*width-1);
+}
